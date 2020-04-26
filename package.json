@@ -4,9 +4,9 @@
   "description": "podcast app",
   "main": "index.js",
   "scripts": {
-    "dev":"next",
-    "build":"next build",
-    "start":"next start"
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
   },
   "repository": {
     "type": "git",
