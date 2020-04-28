@@ -1,50 +1,91 @@
+import 'isomorphic-unfetch';
+
 // React por defecto como es un modulo de dependencia podemos ejecutarlo sin necesidad de importarlo
 export default class extends React.Component {
+
+    // Inyecta a los props de este componente
+    static async getInitialProps() {
+        try {
+            const response = await fetch('https://api.audioboom.com/channels/recommended');
+            const { body: channels } = await response.json();
+
+            return {
+                channels
+            };
+        } catch (error) {
+            return error;
+        }
+    }
+
     render() {
+
+        const { channels } = this.props;
+
         return (
             <div>
-                <h1>Hola!</h1>
-                <p>Bienvenidos</p>
+                <header>Podcasts</header>
+                <div className="channels">
+                    {/* Parentesis con el map es para devolver algo */}
+                    {channels.map(({ title, id, urls }) => (
 
-                <img src="/static/platzi-logo.png" alt="platzi" />
+                        <div className="channel" key={id}>
+                            <img src={urls.logo_image.original} alt="" />
+                            <h2>{title}</h2>
+                        </div>
 
+                    ))}
+                </div>
                 {/* Esto solo aplica para componente y no se aplicara a componentes internos o externos */}
-                <style jsx>{`
-                h1 {
-                    color: red;
-                }
+                <style jsx>
+                    {`
+                       header{
+                           color: #fff;
+                           background: #8756ca;
+                           padding: 15px;
+                           text-align: center;
+                       }
 
-                p {
-                    color: green;
-                }
-                
-                // Esto se usa para saltar el scope normal y hacer el estilo global
-                :global(p){
-                    color:green;
-                }
+                       .channels {
+                        display: grid;
+                        grid-gap: 15px;
+                        padding: 15px;
+                        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                      }
 
-                img {
-                    max-width: 50%;
-                    display: block;
-                    margin: 0 auto;
-                }
-                // 
-                // component :global(propierty css)
-                // {
-                //    property: value;
-                // }
-                // 
-            `}</style>
-            {/* Esta es una manera de romper la regla normal y hacerla global
+                       .channel{
+                           display: block;
+                           border-radius: 3px;
+                           box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
+                           margin-bottom: 0.5em;
+                       }
+
+                       .channel img {
+                           width: 100%;
+                       }
+
+                       h2 {
+                           padding: 5px;
+                           font-size: 0.9em;
+                           font-weight: 600;
+                           margin: 0;
+                           text-align: center;
+                       }
+                    `}
+                </style>
+                {/* Esta es una manera de romper la regla normal y hacerla global
                 pero esto solo debe usarse cuando realmente sea necesario 
 
                 Lo primero es ver con la primera regla normal del jsx style
             */}
-            <style jsx global>{`
-                body {
-                    background: white;
-                }
-            `}</style>
+                <style jsx global>
+                    {`
+                        body{
+                            margin: 0;
+                            font-family: system-ui;
+                            background: white;
+                        }
+                    `}
+                </style>
             </div>
         )
     }
