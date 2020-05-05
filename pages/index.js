@@ -1,4 +1,5 @@
 import 'isomorphic-unfetch';
+import Link from 'next/link';
 
 // React por defecto como es un modulo de dependencia podemos ejecutarlo sin necesidad de importarlo
 export default class extends React.Component {
@@ -27,12 +28,12 @@ export default class extends React.Component {
                 <div className="channels">
                     {/* Parentesis con el map es para devolver algo */}
                     {channels.map(({ title, id, urls }) => (
-
-                        <div className="channel" key={id}>
-                            <img src={urls.logo_image.original} alt="" />
-                            <h2>{title}</h2>
-                        </div>
-
+                        <Link href="/channel" >
+                            <div className="channel" key={id}>
+                                <img src={urls.logo_image.original} alt="" />
+                                <h2>{title}</h2>
+                            </div>
+                        </Link>
                     ))}
                 </div>
                 {/* Esto solo aplica para componente y no se aplicara a componentes internos o externos */}
@@ -57,6 +58,7 @@ export default class extends React.Component {
                            border-radius: 3px;
                            box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
                            margin-bottom: 0.5em;
+                           cursor: pointer;
                        }
 
                        .channel img {
