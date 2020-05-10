@@ -28,8 +28,8 @@ export default class extends React.Component {
                 <div className="channels">
                     {/* Parentesis con el map es para devolver algo */}
                     {channels.map(({ title, id, urls }) => (
-                        <Link href="/channel" >
-                            <div className="channel" key={id}>
+                        <Link href={`/channel?id=${id}`} key={id}>
+                            <div className="channel">
                                 <img src={urls.logo_image.original} alt="" />
                                 <h2>{title}</h2>
                             </div>
