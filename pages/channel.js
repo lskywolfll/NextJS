@@ -3,7 +3,7 @@ import 'isomorphic-unfetch';
 
 class channel extends Component {
     render() {
-        const { channel, audio_clips } = this.props
+        const { channel, audio_clips, series } = this.props
         const { title } = channel;
 
         return (
@@ -12,8 +12,12 @@ class channel extends Component {
 
                 <h1>{title}</h1>
 
-                {audio_clips.map(({title}) => (
-                    <div>{title}</div>
+                {series.map(({ title }) => (
+                    <div key={title}>{title}</div>
+                ))}
+
+                {audio_clips.map(({ title }) => (
+                    <div key={title}>{title}</div>
                 ))}
 
                 <style jsx>
@@ -72,22 +76,27 @@ class channel extends Component {
     }
 }
 
-export async function getServerSideProps({ query }) {
-    const idChannel = query.id;
+export async function getServerSideProps({ query: { id } }) {
 
-    const responseChannel = await fetch(`https://api.audioboom.com/channels/${idChannel}`);
+    const [responseChannel, responseChildChannels, responseAudios] = await Promise.all([
+        fetch(`https://api.audioboom.com/channels/${id}`),
+        fetch(`https://api.audioboom.com/channels/${id}/child_channels`),
+        fetch(`https://api.audioboom.com/channels/${id}/audio_clips`)
+    ]);
+
     const dataChannel = await responseChannel.json();
-
-    const responseAudios = await fetch(`https://api.audioboom.com/channels/${idChannel}/audio_clips`);
     const dataAudios = await responseAudios.json();
+    const dataChildChannel = await responseChildChannels.json();
 
     const { audio_clips } = dataAudios.body;
     const { channel } = dataChannel.body;
+    const series = dataChildChannel.body.channels;
 
     return {
         props: {
             channel,
-            audio_clips
+            audio_clips,
+            series
         },
     }
 }
