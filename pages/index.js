@@ -1,22 +1,19 @@
 import 'isomorphic-unfetch';
 import Link from 'next/link';
 
+export async function getStaticProps() {
+    const response = await fetch('https://api.audioboom.com/channels/recommended');
+    const { body: channels } = await response.json();
+
+    return {
+        props: {
+            channels
+        },
+    }
+}
+
 // React por defecto como es un modulo de dependencia podemos ejecutarlo sin necesidad de importarlo
 export default class extends React.Component {
-
-    // Inyecta a los props de este componente
-    static async getInitialProps() {
-        try {
-            const response = await fetch('https://api.audioboom.com/channels/recommended');
-            const { body: channels } = await response.json();
-
-            return {
-                channels
-            };
-        } catch (error) {
-            return error;
-        }
-    }
 
     render() {
 

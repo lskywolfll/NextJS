@@ -1,6 +1,32 @@
 import React, { Component } from 'react'
 import 'isomorphic-unfetch';
 
+export async function getServerSideProps({ query: { id } }) {
+
+    // Ejecuta todas las request en paralelo y sin esperar la una e la otra para poder recabar todas las informaciones
+    const [responseChannel, responseChildChannels, responseAudios] = await Promise.all([
+        fetch(`https://api.audioboom.com/channels/${id}`),
+        fetch(`https://api.audioboom.com/channels/${id}/child_channels`),
+        fetch(`https://api.audioboom.com/channels/${id}/audio_clips`)
+    ]);
+
+    const dataChannel = await responseChannel.json();
+    const dataAudios = await responseAudios.json();
+    const dataChildChannel = await responseChildChannels.json();
+
+    const { audio_clips } = dataAudios.body;
+    const { channel } = dataChannel.body;
+    const series = dataChildChannel.body.channels;
+
+    return {
+        props: {
+            channel,
+            audio_clips,
+            series
+        },
+    }
+}
+
 class channel extends Component {
     render() {
         const { channel, audio_clips, series } = this.props
@@ -10,11 +36,13 @@ class channel extends Component {
             <div>
                 <header>Podcasts</header>
 
-                <h1>{title}</h1>
+                <h2>Series</h2>
 
                 {series.map(({ title }) => (
                     <div key={title}>{title}</div>
                 ))}
+
+                <h2>Ultimos Podcasts</h2>
 
                 {audio_clips.map(({ title }) => (
                     <div key={title}>{title}</div>
@@ -73,31 +101,6 @@ class channel extends Component {
                 </style>
             </div>
         )
-    }
-}
-
-export async function getServerSideProps({ query: { id } }) {
-
-    const [responseChannel, responseChildChannels, responseAudios] = await Promise.all([
-        fetch(`https://api.audioboom.com/channels/${id}`),
-        fetch(`https://api.audioboom.com/channels/${id}/child_channels`),
-        fetch(`https://api.audioboom.com/channels/${id}/audio_clips`)
-    ]);
-
-    const dataChannel = await responseChannel.json();
-    const dataAudios = await responseAudios.json();
-    const dataChildChannel = await responseChildChannels.json();
-
-    const { audio_clips } = dataAudios.body;
-    const { channel } = dataChannel.body;
-    const series = dataChildChannel.body.channels;
-
-    return {
-        props: {
-            channel,
-            audio_clips,
-            series
-        },
     }
 }
 
