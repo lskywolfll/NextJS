@@ -1,0 +1,15 @@
+.Logo {
+    transition: ease;
+    transition-delay: 1s;
+    transition-duration: 1s;
+    transition-timing-function: ease;
+    transition-property: all;
+}
+
+.close {
+    background-image: url('../public/static/platzi-logo.png');
+}
+
+.nav_arrow {
+    vertical-align: middle !important;
+}

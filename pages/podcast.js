@@ -1,5 +1,6 @@
 import 'isomorphic-unfetch'
 import Link from 'next/link'
+import styles from '../styles/podcast.module.css';
 
 export async function getServerSideProps({ query: { id } }) {
 
@@ -22,17 +23,17 @@ class podcast extends React.Component {
 
       <div className='modal'>
         <div className='clip'>
-          <nav>
+          <nav className="animate__animated animate__fadeInLeft animate__delay-1s">
             <Link href={`/channel?id=${clip.id}`}>
-              <a className='close'>&lt; Volver</a>
+              <a className='close'><img className={styles.nav_arrow} src="/static/arrow.svg" width="20px" height="auto" /> Volver</a>
             </Link>
           </nav>
 
-          <picture>
+          <picture className="Logo animate__animated animate__backInDown animate__delay-1s">
             <div style={{ backgroundImage: `url(${clip.user.urls.image || clip.urls.logo_image.original})` }} />
           </picture>
 
-          <div className='player'>
+          <div className='player animate__animated animate__bounceInLeft animate__delay-1s'>
             <h3>{clip.title}</h3>
             {/* <h6>{clip.channel.title}</h6> */}
             <audio controls autoPlay={true}>
